@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap");
+
+a {
+  color: black !important;
+}
+
+.insta-logo {
+  font-family: "Grand Hotel", cursive;
+}
+
+.my-card {
+  margin-top: 1.875rem;
+}
+
+.auth-card {
+  padding: 1.25rem;
+  text-align: center;
+  max-width: 25rem;
+  margin: 0.625rem auto;
+}
+
+.input-field input[type="text"]:focus {
+  border-bottom: 1px solid rgb(11, 112, 228) !important;
+  box-shadow: 0 1px 0 0 rgb(8, 117, 243) !important;
+}
+
+.input-field input[type="password"]:focus {
+  border-bottom: 1px solid rgb(11, 112, 228) !important;
+  box-shadow: 0 1px 0 0 rgb(8, 117, 243) !important;
+}
+
+img {
+  object-fit: cover;
+}
+
+.user-info-container {
+  display: flex;
+  justify-content: space-around;
+  /* margin: 1.125rem 0rem; */
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.875rem;
+  border-bottom: 1px solid grey;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.img-item {
+  width: 30%;
+}
+
+.profile-container {
+  max-width: 90%;
+  margin: 0px auto;
+}
+
+.home-card {
+  max-width: 31.25rem;
+  height: max-content;
+  margin: 1.625rem auto;
+}
+
+.heart-icon-red {
+  color: red !important;
+}
+
+.heart-icon {
+  color: grey;
+}
+
+.create-post-card-container {
+  margin: 1.875rem auto;
+  max-width: 31.25rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+#toast-container {
+  top: 50px !important;
+  right: 20px !important;
+  left: auto !important;
+}
+
+.material-icons {
+  cursor: pointer;
+}
+
+.profile_image_container {
+  position: relative;
+}
+
+.profile_image_container:hover {
+  color: black;
+  cursor: pointer;
+}
+
+.icon_btn {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  /* background-color: #555; */
+  color: rgb(245, 239, 239);
+  /* font-size: 10px; */
+  /* padding: 12px 24px; */
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+label {
+  font-size: 50px;
+}
+
+/* button apeares on profile as a button to change profile pic */
+
+.profile_image:hover + .icon_btn {
+  display: block;
+  cursor: pointer;
+}
+
+.profile_image:hover {
+  background-color: rgba(27, 26, 26, 0.671);
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.like_comment_container {
+  border-bottom: 1px solid rgb(204, 204, 204);
+}
+
+.fa-comment,
+.fa-heart,
+.fa-user,
+.fa-plus-square,
+.fa-compass,
+.fa-ellipsis-h
+ {
+  color: grey;
+  font-size: 1.563rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+/* **************************************************************************** */
+/* heart icon on top of posted image shows up oly when hovering on photo */
+/* **************************************************************************** */
+.heart-icon-onpic {
+  display: none;
+  position: absolute;
+  /* position the element in the middle */
+  top: 50%;
+  left: 50%;
+  margin-top: -35px;
+  margin-left: -35px;
+  color: rgba(255, 255, 255, 0.877);
+  font-size: 70px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.5s ease;
+}
+
+.post_image {
+  cursor: pointer;
+}
+/********************************************************
+ makes the heart icon appears in slow trasition when user
+ hovers on posted image and on the icon 
+ ********************************************************/
+.post_image:hover + .heart-icon-onpic,
+.heart-icon-onpic:hover {
+  display: block;
+  cursor: pointer;
+  animation: grow 0.3s ease-in-out;
+  -webkit-animation: grow.3s ease-in-out;
+  -moz-animation: grow 0.3s ease-in-out;
+}
+
+@-moz-keyframes grow {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes grow {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes grow {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+
+.nav-bar-container{
+margin-left: 40px;
+margin-right: 40px;
+  
+}
