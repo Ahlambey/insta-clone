@@ -98,7 +98,7 @@ export default function Signup() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <div className="file-field input-field">
+          {/* <div className="file-field input-field">
             <div className="btn #64b5f6 blue darken-1">
               <span>Upload image</span>
               <input
@@ -109,7 +109,27 @@ export default function Signup() {
             <div className="file-path-wrapper">
               <input className="file-path validate" type="text" />
             </div>
+          </div> */}
+
+          <div className="file-field input-field">
+            <label
+              style={{ fontSize: "inherit", color: "white" }}
+              htmlFor="post_image_upload"
+            >
+              <div className="btn #64b5f6 blue darken-1">Upload image</div>
+            </label>
+
+            <input
+              id="post_image_upload"
+              type="file"
+              onChange={(e) => setProfilePic(e.target.files[0])}
+            />
+
+            <div className="file-path-wrapper">
+              <input className="file-path validate" type="text" />
+            </div>
           </div>
+
           <button
             className="btn waves-effect waves-light #64b5f6 blue darken-1"
             onClick={handleSignup}

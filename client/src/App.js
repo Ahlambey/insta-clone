@@ -14,13 +14,15 @@ import Signup from "./components/screens/Signup";
 import UserProfile from './components/screens/UserProfile';
 import CreatePost from "./components/screens/CreatePost";
 import FollowedUserPosts from './components//screens/FollowedUserPosts';
+import ResetPassword from './components/screens/ResetPassword';
+import NewPassword from './components/screens/NewPassword';
 import { reducer, initialState } from "./reducers/userReducer";
 
 export const UserContext = createContext();
 
 const Routing = () => {
   const history = useHistory();
-  const {state, dispatch}= useContext(UserContext);
+  const {dispatch}= useContext(UserContext);
 
 
   useEffect(() => {
@@ -29,6 +31,7 @@ const Routing = () => {
     if(user){
       dispatch({type:"USER", payload:user})
     }else{
+      if(!history.location.pathname.startsWith('/reset'))
       history.push('/login');
     }
    
@@ -61,6 +64,12 @@ const Routing = () => {
       </Route>
       <Route path='/followedUserPosts'>
         <FollowedUserPosts/>
+      </Route>
+      <Route exact path='/reset'>
+        <ResetPassword/>
+      </Route>
+      <Route path='/reset/:token'>
+        <NewPassword/>
       </Route>
     </Switch>
   );

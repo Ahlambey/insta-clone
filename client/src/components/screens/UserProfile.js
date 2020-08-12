@@ -6,7 +6,7 @@ export default function UserProfile() {
   const [userProfile, setUserProfile] = useState(null);
   const { state, dispatch } = useContext(UserContext);
   const { userId } = useParams();
-  console.log(userId);
+
 
   useEffect(() => {
     fetch(`/user/${userId}`, {
@@ -16,12 +16,11 @@ export default function UserProfile() {
     })
       .then((res) => res.json())
       .then((results) => {
-        console.log(results);
         setUserProfile(results);
       })
       .catch((error) => console.log(error));
     return () => {
-      setUserProfile([]);
+      setUserProfile(null);
     };
   }, [userId]);
 
@@ -38,7 +37,7 @@ export default function UserProfile() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+     
         setUserProfile((prevState) => {
           return {
             ...prevState,
@@ -71,7 +70,7 @@ export default function UserProfile() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+    
         setUserProfile((prevState) => {
           return {
             ...prevState,
@@ -109,6 +108,7 @@ export default function UserProfile() {
                   borderRadius: "100%",
                 }}
                 src={userProfile && userProfile.user.profilePicUrl}
+                className="profile_image"
               />
             </div>
 

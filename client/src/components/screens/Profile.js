@@ -5,7 +5,7 @@ export default function Profile() {
   const [myPhotos, setMyPhotos] = useState([]);
   const { state, dispatch } = useContext(UserContext);
   const [updateProfilePic, setUpdateProfilePic] = useState("");
-  const [profilePicUrl, setProfilePicUrl] = useState(undefined);
+ 
 
   useEffect(() => {
     fetch("/myposts", {
@@ -15,7 +15,7 @@ export default function Profile() {
     })
       .then((res) => res.json())
       .then((results) => {
-        console.log(results);
+    
         setMyPhotos(results.myposts);
       })
       .catch((error) => console.log(error));
@@ -37,9 +37,6 @@ export default function Profile() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
-  
-          // setProfilePicUrl(data.secure_url);
           updateProfilePicInDB(data.secure_url);
        
         })
@@ -69,7 +66,6 @@ export default function Profile() {
 
     .then(res=>res.json())
     .then(result=>{
-      console.log('results are:',result);
 
       localStorage.setItem('user', JSON.stringify({
         ...state,
@@ -100,7 +96,7 @@ export default function Profile() {
               className="profile_image"
             />
             <label htmlFor="update_image_file" className="icon_btn">
-              <i className="material-icons " style={{ fontSize: "50px" }}>
+              <i className="material-icons " style={{ fontSize: "100px !important" }}>
                 camera_alt
               </i>
             </label>

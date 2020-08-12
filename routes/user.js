@@ -111,6 +111,18 @@ router.put('/updateprofilepic',requireLogin,(req,res)=>{
 
 });
 
+router.post('/search-users',requireLogin,(req,res)=>{
+
+  let userPattern = new RegExp('^'+req.body.query);
+  User.find({email:{$regex: userPattern}})
+  .select('_id email profilePicUrl')
+  .then(user=>{
+    res.json({user});
+  })
+  .catch(error=>console.log(error))
+
+  
+})
 
 
 module.exports = router;

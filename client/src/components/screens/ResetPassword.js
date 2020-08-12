@@ -1,13 +1,10 @@
-import React, { useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
-import {UserContext} from '../../App';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import M from "materialize-css";
 
-export default function Login() {
-  const {dispatch} = useContext(UserContext);
+export default function ResetPassword() {
   const history = useHistory();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -16,14 +13,13 @@ export default function Login() {
       M.toast({ html: "Invalid email.", classes: "#f44336 red" });
       return;
     }
-    fetch("/signin", {
+    fetch("/reset-password", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email,
-        password,
       }),
     })
       .then((res) => res.json())
@@ -31,21 +27,17 @@ export default function Login() {
         if (data.error) {
           M.toast({ html: data.error, classes: "#f44336 red" });
         } else {
-          localStorage.setItem("jwt", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          dispatch({type:"USER", payload: data.user});
-
           M.toast({
-            html: "successfully signed in.",
+            html: data.message,
             classes: "#4caf50 green",
           });
-          history.push("/");
+          history.push("/login");
         }
       })
       .catch((error) => console.log(error));
   };
 
-  const handleSignin = (e) => {
+  const handlePasswordReset = (e) => {
     e.preventDefault();
     postData();
   };
@@ -62,27 +54,16 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <input
-            type="password"
-            placeholder="Password..."
-            formNoValidate
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+
           <button
             className="btn waves-effect waves-light #64b5f6 blue darken-1"
-            onClick={handleSignin}
+            onClick={handlePasswordReset}
           >
-            Login
+            Reset Password
           </button>
-          <h5>
-            <Link to="/signup">Don't have an account? </Link>
-          </h5>
-          <h6>
-            <Link to="/reset"><span style={{color:'#1E88E5'}}> Forgot your password?</span> </Link>
-          </h6>
         </form>
       </div>
+     
     </div>
   );
 }

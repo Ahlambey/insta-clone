@@ -1,13 +1,25 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../App";
 import { Link } from "react-router-dom";
 import M from "materialize-css";
 
 export default function FollowedUserPosts() {
   const [data, setData] = useState([]);
-  const { state, dispatch } = useContext(UserContext);
+  const { state } = useContext(UserContext);
   const [showComments, setShowComments] = useState(false);
   const [commentPostId, setCommentPostId] = useState(null);
+  const [comment, setComment] = useState("");
+
+  useEffect(() => {
+    var elems = document.querySelectorAll(".collapsible");
+    M.Collapsible.init(elems, {
+      inDuration: 300,
+      outDuration: 225,
+      coverTrigger: false,
+    });
+
+    return () => {};
+  });
 
   useEffect(() => {
     fetch("/allfollowedposts", {
@@ -17,7 +29,6 @@ export default function FollowedUserPosts() {
     })
       .then((res) => res.json())
       .then((results) => {
-        console.log(results);
         setData(results.posts);
       })
       .catch((error) => console.log(error));
@@ -40,8 +51,6 @@ export default function FollowedUserPosts() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log("likes:", result);
-
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -68,8 +77,6 @@ export default function FollowedUserPosts() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -97,7 +104,6 @@ export default function FollowedUserPosts() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -120,9 +126,8 @@ export default function FollowedUserPosts() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         const newData = data.filter((item) => {
-          return item._id !== result._id;
+          return item._id === result._id;
         });
         setData(newData);
       })
@@ -130,8 +135,9 @@ export default function FollowedUserPosts() {
   };
 
   const deleteComment = (postId, comment_id) => {
+    console.log(comment_id);
     fetch(`/deletecomment/${postId}`, {
-      method: "delete",
+      method: "put",
       headers: {
         "Content-Type": "application/json",
 
@@ -157,32 +163,32 @@ export default function FollowedUserPosts() {
       .catch((error) => console.log(error));
   };
 
-  const updateComment = (text, postId) => {
-    fetch(`/updatecomment/${postId}`, {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        text,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
+  // const updateComment = (text, postId) => {
+  //   fetch(`/updatecomment/${postId}`, {
+  //     method: "put",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+  //     },
+  //     body: JSON.stringify({
+  //       text,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       const newData = data.map((item) => {
+  //         if (item._id === result._id) {
+  //           return result;
+  //         } else {
+  //           return item;
+  //         }
+  //       });
 
-        setData(newData);
-      })
-      .catch((error) => console.log(error));
-  };
+  //       setData(newData);
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   const showPostComment = (post_id, showComments) => {
     if (post_id) {
@@ -193,24 +199,24 @@ export default function FollowedUserPosts() {
     }
   };
 
-  useEffect(() => {
-    let elems = document.querySelectorAll(".dropdown-trigger");
-    M.Dropdown.init(elems, {
-      inDuration: 300,
-      outDuration: 225,
-      coverTrigger: false,
-    });
+  const handleComment = (e) => {
+    setComment(e.target.value);
+  };
 
-    return () => {};
-  });
+  const handleCommentSubmit = (e, itemId) => {
+    e.preventDefault();
+    makeComment(comment, itemId);
+    setCommentPostId(itemId);
+    setShowComments(true);
+    setComment("");
+  };
 
   return (
     <div className="home">
       {data.map((item) => {
-        console.log("this is item", item);
         return (
           <div key={item._id} className="card home-card">
-            <h5 style={{ padding: "0.375rem", display: "ruby-base-container" }}>
+            <h5 style={{ padding: "0.375rem" }}>
               <div className="cardheader">
                 <img
                   alt="profile"
@@ -238,32 +244,6 @@ export default function FollowedUserPosts() {
                   {item.postedBy.name}
                 </Link>
               </div>
-              {item.postedBy._id === state._id && (
-                <span
-                  style={{
-                    verticalAlign: "middle",
-                    display: "inline",
-                    marginLeft: "17rem",
-                  }}
-                >
-                  <a
-                    className="dropdown-trigger"
-                    href="#"
-                    data-target="dropdown2"
-                  >
-                    <i className="fas fa-ellipsis-h"></i>
-                  </a>
-
-                  <ul id="dropdown2" className="dropdown-content">
-                    <li
-                      onClick={() => deletePost(item._id)}
-                      style={{ fontSize: "medium" }}
-                    >
-                      Delete
-                    </li>
-                  </ul>
-                </span>
-              )}
             </h5>
 
             <div className="card-image">
@@ -305,13 +285,7 @@ export default function FollowedUserPosts() {
                 ></i>
               </div>
 
-              <h6>
-                <i className="material-icons " style={{ fontSize: "smaller" }}>
-                  {" "}
-                  favorite
-                </i>
-                {item.likes.length} likes
-              </h6>
+              <h6>{item.likes.length} likes</h6>
 
               <h6>{item.title}</h6>
 
@@ -327,42 +301,29 @@ export default function FollowedUserPosts() {
                       {comment.text}
                       {comment.postedBy._id === state._id && (
                         <span style={{ float: "right" }}>
-                          <a
-                            className="dropdown-trigger"
-                            href="#"
-                            data-target="dropdown4"
-                          >
-                            <i className="fas fa-ellipsis-h"></i>
-                          </a>
-
-                          <ul id="dropdown4" className="dropdown-content">
-                            <li
-                              onClick={() =>
-                                deleteComment(item._id, comment._id)
-                              }
-                            >
-                              Delete
-                            </li>
-                          </ul>
-
-                          {/* <i className="material-icons" style={{ cursor: "pointer", float:"right" }} onClick={()=>updateComment(item._id)}>create</i> */}
+                          <i
+                            class="fas fa-times"
+                            onClick={() => {
+                              deleteComment(item._id, comment._id);
+                            }}
+                          ></i>
                         </span>
                       )}
                     </h6>
                   );
-                } else {
-                  return;
                 }
               })}
               <form
                 onSubmit={(e) => {
-                  e.preventDefault();
-                  makeComment(e.target[0].value, item._id);
-                  showPostComment(item._id, showComments);
+                  handleCommentSubmit(e, item._id);
                 }}
               >
-                {/* <span onClick={()=>deleteComment(item._id)}>X</span> */}
-                <input type="text" placeholder="add a comment..." />
+                <input
+                  onChange={(e) => handleComment(e)}
+                  value={comment}
+                  type="text"
+                  placeholder="add a comment..."
+                />
               </form>
             </div>
           </div>

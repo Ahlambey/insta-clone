@@ -25,7 +25,6 @@ export default function CreatePost() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           if (data.error) {
             M.toast({ html: data.error, classes: "#f44336 red" });
           } else {

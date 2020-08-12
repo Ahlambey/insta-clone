@@ -5,9 +5,10 @@ import M from "materialize-css";
 
 export default function Home() {
   const [data, setData] = useState([]);
-  const { state, dispatch } = useContext(UserContext);
+  const { state } = useContext(UserContext);
   const [showComments, setShowComments] = useState(false);
   const [commentPostId, setCommentPostId] = useState(null);
+  const [comment, setComment] = useState("");
   useEffect(() => {
     fetch("/allposts", {
       headers: {
@@ -16,7 +17,6 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((results) => {
-        console.log(results);
         setData(results.posts);
       })
       .catch((error) => console.log(error));
@@ -39,8 +39,6 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log("likes:", result);
-
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -67,8 +65,6 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
-
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -96,7 +92,6 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -119,7 +114,6 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
         const newData = data.filter((item) => {
           return item._id !== result._id;
         });
@@ -129,11 +123,11 @@ export default function Home() {
   };
 
   const deleteComment = (postId, comment_id) => {
+    console.log(comment_id);
     fetch(`/deletecomment/${postId}`, {
-      method: "delete",
+      method: "put",
       headers: {
         "Content-Type": "application/json",
-
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({
@@ -156,32 +150,32 @@ export default function Home() {
       .catch((error) => console.log(error));
   };
 
-  const updateComment = (text, postId) => {
-    fetch(`/updatecomment/${postId}`, {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        text,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
+  // const updateComment = (text, postId) => {
+  //   fetch(`/updatecomment/${postId}`, {
+  //     method: "put",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+  //     },
+  //     body: JSON.stringify({
+  //       text,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       const newData = data.map((item) => {
+  //         if (item._id === result._id) {
+  //           return result;
+  //         } else {
+  //           return item;
+  //         }
+  //       });
 
-        setData(newData);
-      })
-      .catch((error) => console.log(error));
-  };
+  //       setData(newData);
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   const showPostComment = (post_id, showComments) => {
     if (post_id) {
@@ -203,13 +197,37 @@ export default function Home() {
     return () => {};
   });
 
+  useEffect(() => {
+    document.addEventListener("DOMContentLoaded", function () {
+      var elems = document.querySelectorAll(".sidenav");
+      M.Sidenav.init(elems);
+    });
+  });
+
+  const handleComment = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleCommentSubmit = (e, itemId) => {
+    e.preventDefault();
+    makeComment(comment, itemId);
+    setCommentPostId(itemId);
+    setShowComments(true);
+    setComment("");
+  };
+
   return (
     <div className="home">
       {data.map((item) => {
-        console.log("this is item", item);
         return (
           <div key={item._id} className="card home-card">
-            <h5 style={{ padding: "0.375rem", display: "ruby-base-container" }}>
+            <h5
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+              }}
+            >
               <div className="cardheader">
                 <img
                   alt="profile"
@@ -238,30 +256,34 @@ export default function Home() {
                 </Link>
               </div>
               {item.postedBy._id === state._id && (
-                <span
-                  style={{
-                    verticalAlign: "middle",
-                    display: "inline",
-                    marginLeft: "17rem",
-                  }}
+                <i
+                  style={{ margin: "10px", color:'grey' }}
+                  class="material-icons"
+                  onClick={() => deletePost(item._id)}
                 >
-                  <a
-                    className="dropdown-trigger"
-                    href="#"
-                    data-target="dropdown2"
-                  >
-                    <i className="fas fa-ellipsis-h"></i>
-                  </a>
+                  delete
+                </i>
 
-                  <ul id="dropdown2" className="dropdown-content">
-                    <li
-                      onClick={() => deletePost(item._id)}
-                      style={{ fontSize: "medium" }}
-                    >
-                      Delete
-                    </li>
-                  </ul>
-                </span>
+                // <span
+                //   style={{
+                //     verticalAlign: "middle",
+                //     display: "inline",
+                //     marginLeft: "17rem",
+                //   }}
+                // >
+                //   <span className="dropdown-trigger" data-target="dropdown2">
+                //     <i className="fas fa-ellipsis-h"></i>
+                //   </span>
+
+                //   <ul id="dropdown2" className="dropdown-content">
+                //     <li
+                //       onClick={() => deletePost(item._id)}
+                //       style={{ fontSize: "medium" }}
+                //     >
+                //       Delete
+                //     </li>
+                //   </ul>
+                // </span>
               )}
             </h5>
 
@@ -304,13 +326,7 @@ export default function Home() {
                 ></i>
               </div>
 
-              <h6>
-                <i className="material-icons " style={{ fontSize: "smaller" }}>
-                  {" "}
-                  favorite
-                </i>
-                {item.likes.length} likes
-              </h6>
+              <h6>{item.likes.length} likes</h6>
 
               <h6>{item.title}</h6>
 
@@ -319,49 +335,38 @@ export default function Home() {
               {item.comments.map((comment) => {
                 if (commentPostId === item._id && showComments) {
                   return (
-                    <h6 key={comment._id}>
-                      <span style={{ fontWeight: "500" }}>
-                        {comment.postedBy.name}
-                      </span>{" "}
-                      {comment.text}
-                      {comment.postedBy._id === state._id && (
-                        <span style={{ float: "right" }}>
-                          <a
-                            className="dropdown-trigger"
-                            href="#"
-                            data-target="dropdown3"
-                          >
-                            <i className="fas fa-ellipsis-h"></i>
-                          </a>
-
-                          <ul id="dropdown3" className="dropdown-content">
-                            <li
-                              onClick={() =>
-                                deleteComment(item._id, comment._id)
-                              }
-                            >
-                              Delete
-                            </li>
-                          </ul>
-
-                          {/* <i className="material-icons" style={{ cursor: "pointer", float:"right" }} onClick={()=>updateComment(item._id)}>create</i> */}
-                        </span>
-                      )}
-                    </h6>
+                    <>
+                      <h6 key={comment._id}>
+                        <span style={{ fontWeight: "500" }}>
+                          {comment.postedBy.name}
+                        </span>{" "}
+                        {comment.text}
+                        {comment.postedBy._id === state._id && (
+                          <span style={{ float: "right" }}>
+                            <i
+                              class="fas fa-times"
+                              onClick={() => {
+                                deleteComment(item._id, comment._id);
+                              }}
+                            ></i>
+                          </span>
+                        )}
+                      </h6>
+                    </>
                   );
-                } else {
-                  return;
                 }
               })}
               <form
                 onSubmit={(e) => {
-                  e.preventDefault();
-                  makeComment(e.target[0].value, item._id);
-                  showPostComment(item._id, showComments);
+                  handleCommentSubmit(e, item._id);
                 }}
               >
-                {/* <span onClick={()=>deleteComment(item._id)}>X</span> */}
-                <input type="text" placeholder="add a comment..." />
+                <input
+                  onChange={(e) => handleComment(e)}
+                  value={comment}
+                  type="text"
+                  placeholder="add a comment..."
+                />
               </form>
             </div>
           </div>
