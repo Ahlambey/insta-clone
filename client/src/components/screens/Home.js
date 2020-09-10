@@ -17,6 +17,7 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((results) => {
+        console.log(results)
         setData(results.posts);
       })
       .catch((error) => console.log(error));
@@ -216,162 +217,148 @@ export default function Home() {
     setComment("");
   };
 
-  return (
-    <div className="home">
-      {data.map((item) => {
-        return (
-          <div key={item._id} className="card home-card">
-            <h5
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "nowrap",
-              }}
-            >
-              <div className="cardheader">
-                <img
-                  alt="profile"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "5rem",
-                    margin: "10px",
-                    display: "inline",
-                    verticalAlign: "middle",
-                  }}
-                  src={item.postedBy.profilePicUrl}
-                  className="cardheader__image"
-                />
-
-                <Link
-                  to={
-                    item.postedBy._id === state._id
-                      ? "/profile"
-                      : `/profile/${item.postedBy._id}`
-                  }
-                  style={{ display: "inline-block" }}
-                  className="cardheader__name"
-                >
-                  {item.postedBy.name}
-                </Link>
-              </div>
-              {item.postedBy._id === state._id && (
-                <i
-                  style={{ margin: "10px", color:'grey' }}
-                  class="material-icons"
-                  onClick={() => deletePost(item._id)}
-                >
-                  delete
-                </i>
-
-                // <span
-                //   style={{
-                //     verticalAlign: "middle",
-                //     display: "inline",
-                //     marginLeft: "17rem",
-                //   }}
-                // >
-                //   <span className="dropdown-trigger" data-target="dropdown2">
-                //     <i className="fas fa-ellipsis-h"></i>
-                //   </span>
-
-                //   <ul id="dropdown2" className="dropdown-content">
-                //     <li
-                //       onClick={() => deletePost(item._id)}
-                //       style={{ fontSize: "medium" }}
-                //     >
-                //       Delete
-                //     </li>
-                //   </ul>
-                // </span>
-              )}
-            </h5>
-
-            <div className="card-image">
-              <img className="post_image" alt="wallpaper" src={item.photo} />
-
-              {item.likes.includes(state._id) ? (
-                <i
-                  className="fas fa-heart heart-icon-onpic"
-                  onClick={() => disLikePost(item._id)}
-                  style={{ cursor: "pointer", color: "red" }}
-                ></i>
-              ) : (
-                <i
-                  className="fas fa-heart heart-icon-onpic "
-                  onClick={() => likePost(item._id)}
-                  style={{ cursor: "pointer" }}
-                ></i>
-              )}
-            </div>
-            <div className="card-content">
-              {/* comment and like fonctionalities */}
-              <div className="like_comment_container">
+  if(data){
+    return (
+      <div className="home">
+        
+        {data.map((item) => {
+          return (
+            <div key={item._id} className="card home-card">
+              <h5
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "nowrap",
+                }}
+              >
+                <div className="cardheader">
+                  <img
+                    alt="profile"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "5rem",
+                      margin: "10px",
+                      display: "inline",
+                      verticalAlign: "middle",
+                    }}
+                    src={item.postedBy.profilePicUrl}
+                    className="cardheader__image"
+                  />
+  
+                  <Link
+                    to={
+                      item.postedBy._id === state._id
+                        ? "/profile"
+                        : `/profile/${item.postedBy._id}`
+                    }
+                    style={{ display: "inline-block" }}
+                    className="cardheader__name"
+                  >
+                    {item.postedBy.name}
+                  </Link>
+                </div>
+                {item.postedBy._id === state._id && (
+                  <i
+                    style={{ margin: "10px", color:'grey' }}
+                    class="material-icons"
+                    onClick={() => deletePost(item._id)}
+                  >
+                    delete
+                  </i>
+                )}
+              </h5>
+  
+              <div className="card-image">
+                <img className="post_image" alt="wallpaper" src={item.photo} />
+  
                 {item.likes.includes(state._id) ? (
                   <i
-                    className="fas fa-heart heart-icon-red"
+                    className="fas fa-heart heart-icon-onpic"
                     onClick={() => disLikePost(item._id)}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", color: "red" }}
                   ></i>
                 ) : (
                   <i
-                    className="far fa-heart heart-icon "
+                    className="fas fa-heart heart-icon-onpic "
                     onClick={() => likePost(item._id)}
                     style={{ cursor: "pointer" }}
                   ></i>
                 )}
-                <i
-                  className="far fa-comment "
-                  onClick={() => showPostComment(item._id, showComments)}
-                ></i>
               </div>
-
-              <h6>{item.likes.length} likes</h6>
-
-              <h6>{item.title}</h6>
-
-              <p>{item.body}</p>
-              {/* display comments and write comment */}
-              {item.comments.map((comment) => {
-                if (commentPostId === item._id && showComments) {
-                  return (
-                    <>
-                      <h6 key={comment._id}>
-                        <span style={{ fontWeight: "500" }}>
-                          {comment.postedBy.name}
-                        </span>{" "}
-                        {comment.text}
-                        {comment.postedBy._id === state._id && (
-                          <span style={{ float: "right" }}>
-                            <i
-                              class="fas fa-times"
-                              onClick={() => {
-                                deleteComment(item._id, comment._id);
-                              }}
-                            ></i>
-                          </span>
-                        )}
-                      </h6>
-                    </>
-                  );
-                }
-              })}
-              <form
-                onSubmit={(e) => {
-                  handleCommentSubmit(e, item._id);
-                }}
-              >
-                <input
-                  onChange={(e) => handleComment(e)}
-                  value={comment}
-                  type="text"
-                  placeholder="add a comment..."
-                />
-              </form>
+              <div className="card-content">
+                {/* comment and like fonctionalities */}
+                <div className="like_comment_container">
+                  {item.likes.includes(state._id) ? (
+                    <i
+                      className="fas fa-heart heart-icon-red"
+                      onClick={() => disLikePost(item._id)}
+                      style={{ cursor: "pointer" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="far fa-heart heart-icon "
+                      onClick={() => likePost(item._id)}
+                      style={{ cursor: "pointer" }}
+                    ></i>
+                  )}
+                  <i
+                    className="far fa-comment "
+                    onClick={() => showPostComment(item._id, showComments)}
+                  ></i>
+                </div>
+  
+                <h6>{item.likes.length} likes</h6>
+  
+                <h6>{item.title}</h6>
+  
+                <p>{item.body}</p>
+                {/* display comments and write comment */}
+                {item.comments.map((comment) => {
+                  if (commentPostId === item._id && showComments) {
+                    return (
+                      <>
+                        <h6 key={comment._id}>
+                          <span style={{ fontWeight: "500" }}>
+                            {comment.postedBy.name}
+                          </span>{" "}
+                          {comment.text}
+                          {comment.postedBy._id === state._id && (
+                            <span style={{ float: "right" }}>
+                              <i
+                                class="fas fa-times"
+                                onClick={() => {
+                                  deleteComment(item._id, comment._id);
+                                }}
+                              ></i>
+                            </span>
+                          )}
+                        </h6>
+                      </>
+                    );
+                  }
+                })}
+                <form
+                  onSubmit={(e) => {
+                    handleCommentSubmit(e, item._id);
+                  }}
+                >
+                  <input
+                    onChange={(e) => handleComment(e)}
+                    value={comment}
+                    type="text"
+                    placeholder="add a comment..."
+                  />
+                </form>
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+          );
+        })}
+      </div>
+    );
+
+  }else{
+    return <h1>Loading...</h1>
+  }
+
 }
