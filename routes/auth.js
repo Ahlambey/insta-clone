@@ -11,8 +11,7 @@ const sendGridTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto");
 const {SENDGRID_API, EMAIL}= require('../config/keys')
 
-// email key
-// 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
+
 
 const transporter = nodemailer.createTransport(
   sendGridTransport({
